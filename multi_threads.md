@@ -1,8 +1,69 @@
 # Java多线程
 ## Introduction
-Java中线程生命周期如图所示，共五个状态，分别为：  
-&emsp;&emsp;1）新建状态（New）；  
-&emsp;&emsp;2）就绪状态（Runnable）；  
-&emsp;&emsp;3）运行状态（Running）；  
-&emsp;&emsp;4）阻塞状态Blocked；  
-&emsp;&emsp;5）死亡状态（Dead）。  
+Java中线程生命周期如图所示，共五个状态，分别为：
+1) 新建状态（New）；
+2) 就绪状态（Runnable）；
+3) 运行状态（Running）；
+4) 阻塞状态Blocked；
+5) 死亡状态（Dead）。  
+![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/thread_status.png)
+
+&emsp;&emsp;当线程被创建后即进入了新建状态（如使用new操作创建Thread类）；线程被创建后，该线程的start()方法被调用，则该线程进入就绪状态，等待CPU分配时间片执行；线程获得CPU的时间片后开始运行，线程进入运行状态；当线程因为某种原因暂停执行（如等待IO），让出CPU，则线程进入阻塞状态；线程执行完成或者因为异常退出run()方法后，该线程进入死亡状态，结束其生命周期。  
+&emsp;&emsp;其中阻塞状态共分为三种，分别是：1）等待阻塞（如通过wait()方法，让线程等待某工作的完成）；2）同步阻塞（线程获取如synchronized同步锁失败）；3）其他阻塞（通过调用线程的sleep()、join()或发出了I/O请求）。
+## Thread类
+&emsp;&emsp;Thread类的详细使用方法如下所示，用户通过继承Thread类并重写run方法来实现多线程。该方法存在一个明显的缺点，即在Java中仅允许单继承，具有一定的局限性，不利于扩展。
+```
+public class ThreadSubClassDemo{
+    private static class ThreadDemo extends Thread{
+        @Override
+        public void run(){
+            for(int i = 0; i < 10; i++){
+                System.out.println(i);
+            }
+        }
+    }
+    public static void main(String[] args){
+        for(int i = 0; i < 5; i++){
+            ThreadDemo threadDemo = new ThreadDemo();
+            threadDemo.start();
+        }
+    }
+}
+```
+&emsp;&emsp;在Java中，线程分为守护线程（Daemon Thread）和用户线程（User Thread），守护线程通过Thread类的setDaemon()方法设置，用户线程完成工作之前不会自动结束生命周期，守护线程具备自动结束生命周期的能力。
+在Thread中提供了多种方法，包括sleep()、join()、interrupt()等。下面对其分别进行介绍。
+1) sleep：线程睡眠；
+2) join：让一个线程等待另一个线程完成工作，例如thread.join()表示当前线程等待thread代表的线程工作结束；
+3) interrupt：将线程的中断状态位设置为true，该方法不会中断一个正在运行的线程，其继续执行、中断或是死亡取决于程序本身。
+## Runnable接口
+&emsp;&emsp;Runnable与Callable的区别主要在于运行机制、返回值和异常处理三个方面，因此在Runnable与Callable小节中分别从以上三个方面进行介绍。
+1) 运行机制  
+   a.实现Runnable接口；  
+   b.重写run()方法。
+2) 返回值  
+   无
+3) 异常处理  
+   无没有抛出任何异常，在run()中自行处理
+## Callable接口
+1) 运行机制  
+   a.实现Callable接口；  
+   b.重写call()方法。
+2) 返回值  
+   有
+3) 异常处理  
+   可以抛出异常
+## Future
+### 应用场景  
+&emsp;&emsp;解决问题：上面提到的三种方法都不能保证获取到线程执行的结果，而Future可以。通过实现Callback接口，并用Future可以接收到多线程的执行结果。  
+&emsp;&emsp;场景：Future表示一个可能还没有完成的异步任务的结果，针对这个结果可以添加Callback以便在任务执行成功或失败后作出相应的操作。
+### 接口方法与类图
+&emsp;&emsp;Future接口中包括了5个方法，分别是cancel()、isCancelled()、isDone()、get()、get(long, TimeUnit)，下面分别对其进行详细介绍。
+1) cancel()：停止一个任务，若可以停止则返回true（通过mayInterruptIfRunning判断），若已经完成、已经停止、无法停止则返回false。
+2) isCancelled()：判断当前方法是否取消。
+3) isDone()：判断当前方法是否完成。
+4) get()：当任务结束后返回一个结果，若调用时工作还没有结束，则会阻塞线程直到任务执行完毕。
+5) get(long, TimeUnit)：在get()基础上等待一定的时间，有可能等不到。  
+
+Future接口类图如图3-3所示。
+
+
