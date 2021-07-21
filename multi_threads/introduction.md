@@ -1,5 +1,4 @@
-# Java多线程
-## Introduction
+# Introduction
 Java中线程生命周期如图所示，共五个状态，分别为：
 1) 新建状态（New）；
 2) 就绪状态（Runnable）；

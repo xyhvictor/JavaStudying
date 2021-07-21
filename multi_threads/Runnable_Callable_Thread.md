@@ -1,5 +1,4 @@
-# Thread、Runnable、Callable、Future
-## Thread类
+# Thread类
 &emsp;&emsp;Thread类的详细使用方法如下所示，用户通过继承Thread类并重写run方法来实现多线程。该方法存在一个明显的缺点，即在Java中仅允许单继承，具有一定的局限性，不利于扩展。
 ```
 public class ThreadSubClassDemo{
@@ -24,7 +23,7 @@ public class ThreadSubClassDemo{
 1) sleep：线程睡眠；
 2) join：让一个线程等待另一个线程完成工作，例如thread.join()表示当前线程等待thread代表的线程工作结束；
 3) interrupt：将线程的中断状态位设置为true，该方法不会中断一个正在运行的线程，其继续执行、中断或是死亡取决于程序本身。
-## Runnable接口
+# Runnable接口
 &emsp;&emsp;Runnable与Callable的区别主要在于运行机制、返回值和异常处理三个方面，因此在Runnable与Callable小节中分别从以上三个方面进行介绍。
 1) 运行机制  
    a.实现Runnable接口；  
@@ -33,7 +32,7 @@ public class ThreadSubClassDemo{
    无
 3) 异常处理  
    无没有抛出任何异常，在run()中自行处理
-## Callable接口
+# Callable接口
 1) 运行机制  
    a.实现Callable接口；  
    b.重写call()方法。
