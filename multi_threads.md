@@ -85,7 +85,13 @@ public interface RunnableFuture<V> extends Runnable, Future<V>{
 2) 任务的执行。即将任务分配给多个线程的执行机制，包括***Executor接口***以及继承自Executor接口的***ExecutorService接口***。
 3) 异步计算的结果。即***Future接口***及实现了Future接口的***FutureTask类***。
 
-Executor框架的成员及其关系如图所示
+Executor框架的成员及其关系如图所示  
+![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/Executor.png)  
+Executor框架的使用示意图如图所示  
+![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/Executor_usage.png)  
+使用步骤大致分为散步，如下所示
+1) 实现Runnable并重写run()方法 或 实现Callable并重写call()方法：
+2) 
 ### ExecutorService
 1) newFixedThreadPool  
 &emsp;&emsp;创建一个定长的线程池，可控制线程最大并发数，超出的线程会在队列中等待。
