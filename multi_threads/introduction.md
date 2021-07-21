@@ -5,7 +5,7 @@ Java中线程生命周期如图所示，共五个状态，分别为：
 3) 运行状态（Running）；
 4) 阻塞状态Blocked；
 5) 死亡状态（Dead）。  
-![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/thread_status.png)
+![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/thread_status.png)
 
 &emsp;&emsp;当线程被创建后即进入了新建状态（如使用new操作创建Thread类）；线程被创建后，该线程的start()方法被调用，则该线程进入就绪状态，等待CPU分配时间片执行；线程获得CPU的时间片后开始运行，线程进入运行状态；当线程因为某种原因暂停执行（如等待IO），让出CPU，则线程进入阻塞状态；线程执行完成或者因为异常退出run()方法后，该线程进入死亡状态，结束其生命周期。  
 &emsp;&emsp;其中阻塞状态共分为三种，分别是：1）等待阻塞（如通过wait()方法，让线程等待某工作的完成）；2）同步阻塞（线程获取如synchronized同步锁失败）；3）其他阻塞（通过调用线程的sleep()、join()或发出了I/O请求）。

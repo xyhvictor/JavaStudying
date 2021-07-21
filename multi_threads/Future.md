@@ -11,7 +11,7 @@
 5) get(long, TimeUnit)：在get()基础上等待一定的时间，有可能等不到。  
 
 &emsp;&emsp;Future接口类图如图所示。其中主要包含了RunnableFuture接口、SchedualedFuture接口、CompletableFuture类和ForkJoinFuture类。  
-![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/Future.png)  
+![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/Future.png)  
 ## RunnableFuture
 &emsp;&emsp;RunnableFuture接口同时继承了Future接口和Runnable接口，如下所示。在成功执行run方法后，可以通过Future获得执行结果。
 ```

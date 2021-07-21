@@ -7,11 +7,11 @@
 
 &emsp;&emsp;Executor框架的成员及其关系如图所示  
   
-![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/Executor.png)  
+![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/Executor.png)  
   
 &emsp;&emsp;Executor框架的使用示意图如图所示  
   
-![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/Executor_usage.png)  
+![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/Executor_usage.png)  
   
 使用步骤大致分为三步，如下所示
 1) 实现Runnable并重写run()方法 或 实现Callable并重写call()方法：
