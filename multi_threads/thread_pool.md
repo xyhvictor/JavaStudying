@@ -7,7 +7,7 @@
 ## 处理流程
 &emsp;&emsp;线程池的处理主要分为三步，如图所示。
 <div align="center">  
-<img src="https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/thread_poll_flow_chart.png"  style="zoom:50%"> 
+<img src="https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/thread_poll_flow_chart.png"  style="zoom:10%"> 
 </div>  
 
 1) 线程池判断***核心线程池***里的线程是否都在执行任务。如果不是，则创建一个新的工作线程来执行任务。如果***核心线程池***里的线程都在执行任务，则进入下个流程。
@@ -16,7 +16,7 @@
 
 &emsp;&emsp;ThreadPoolExecutor执行execute()方法的过程如图所示。  
 <div align="center">  
-<img src="https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/ThreadPoolExecutor_flow_chart.png"  style="zoom:50%">  
+<img src="https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/ThreadPoolExecutor_flow_chart.png"  style="zoom:10%">  
 </div>  
 
 1) 如果当前运行的线程少于corePoolSize，则创建新线程来执行任务（执行该步骤需要获取全局锁）。
@@ -71,7 +71,7 @@ public void execute(Runnable command) {
 &emsp;&emsp;线程池创建后会将线程封装成工作线程（Worker类），Worker在执行完任务后，还会循环获取工作队列里的任务来执行。
 &emsp;&emsp;ThreadPoolExecutor中线程执行任务的示意图如图所示。   
 <div align="center">  
-<img src="https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/ThreadPoolExecutor_execute_flow_chart.png"  style="zoom:50%"> 
+<img src="https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/ThreadPoolExecutor_execute_flow_chart.png"  style="zoom:10%"> 
 </div>
 
 线程池中的线程执行任务分两种情况，
