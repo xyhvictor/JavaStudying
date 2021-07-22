@@ -79,20 +79,6 @@ public void execute(Runnable command) {
 1) 在execute()方法中创建一个线程时，会让这个线程执行当前任务。
 2) 这个线程执行完上图中1的任务后，会反复从BlockingQueue获取任务来执行。
 ## 使用线程池
-&emsp;&emsp;可以使用execute()和submit()方法提交任务。  
-&emsp;&emsp;execute方法用于提交不需要返回值的任务，所以无法判断任务是否执行成功，execute()方法输入的任务是一个Runnable类的实例。
-```
-threadsPool.execute(new Runnable(){
-    @Override
-    public void run(){
-        // Todo something
-    }
-});
-```
-&emsp;&emsp;submit()方法用于提交需要返回值的任务，线程池会返回一个future类型的对象，通过future可以获得返回值并且判断是否执行成功。
-```
-Future<Object> future = executor.submit(...);
-```
 ### 创建线程池
 &emsp;&emsp;ThreadPoolExecutor构造函数如下所示。
 ```
@@ -109,6 +95,20 @@ new ThreadFactoryBuilder().setNameFormate("Demo-XX-TT").build();
 6) keepAliveTime：***线程活动保持时间***。工作线程空闲后，保持存活的时间。若任务多可以适当调大。
 7) unit：***keepAliveTime的单位***。TimeUnit.DAYS、TimeUnit.HOURS、TimeUnit.MINUTES、TimeUnit.MILLISECONDS、TimeUnit.MICROSECONDS、TimeUnit.NANOSECONDS。
 ### 提交任务
+&emsp;&emsp;可以使用execute()和submit()方法提交任务。  
+&emsp;&emsp;execute方法用于提交不需要返回值的任务，所以无法判断任务是否执行成功，execute()方法输入的任务是一个Runnable类的实例。
+```
+threadsPool.execute(new Runnable(){
+    @Override
+    public void run(){
+        // Todo something
+    }
+});
+```
+&emsp;&emsp;submit()方法用于提交需要返回值的任务，线程池会返回一个future类型的对象，通过future可以获得返回值并且判断是否执行成功。
+```
+Future<Object> future = executor.submit(...);
+```
 ### 关闭线程池
 &emsp;&emsp;关闭线程池有两种方法：shutdown和shutdownNow。  
 &emsp;&emsp;原理是遍历线程池中的工作线程，然后逐个调用线程的interrupt方法来中断线程，所以无法响应中断的任务可能永远无法终止。两个方法的区别在于：
