@@ -77,3 +77,64 @@ public void execute(Runnable command) {
 线程池中的线程执行任务分两种情况，
 1) 在execute()方法中创建一个线程时，会让这个线程执行当前任务。
 2) 这个线程执行完上图中1的任务后，会反复从BlockingQueue获取任务来执行。
+## 使用线程池
+&emsp;&emsp;可以使用execute()和submit()方法提交任务。  
+&emsp;&emsp;execute方法用于提交不需要返回值的任务，所以无法判断任务是否执行成功，execute()方法输入的任务是一个Runnable类的实例。
+```
+threadsPool.execute(new Runnable(){
+    @Override
+    public void run(){
+        // Todo something
+    }
+});
+```
+&emsp;&emsp;submit()方法用于提交需要返回值的任务，线程池会返回一个future类型的对象，通过future可以获得返回值并且判断是否执行成功。
+```
+Future<Object> future = executor.submit(...);
+```
+### 创建线程池
+&emsp;&emsp;ThreadPoolExecutor构造函数如下所示。
+```
+public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler);
+```
+1) corePoolSize：***线程池的基本大小***。当提交一个任务到线程池时，线程池会创建一个线程来执行任务（即使有空闲线程也会创建）直到需要执行的任务数大于线程池基本大小。调用prestartAllCoreThreads()方法，线程池会提前创建并启动corePoolSize个线程。
+2) maximumPoolSize：***线程池最大数量***。线程池允许创建的最大线程数，如果任务队列满了，并且已创建的线程数小于最大线程数，则会创建线程执行任务直到线程数达到最大数。***（注意：若采用无界队列，则该参数没什么效果，应当避免使用无界队列，可能会导致oom。）***
+3) workQueue：***任务队列***。用于保存等待执行的任务的阻塞队列。可以使用LinkedBlockingQueue、ArrayBlockingQueue、SynchronousQueue、PriorityBlockingQueue。
+4) ThreadFactory：设置创建线程的工厂，可以通过工厂给线程设置有意义的名字***（debug时很有用）***。下面展示了采用guava提供的ThreadFactoryBuilder给线程池中的线程设置有意义的名字。
+```
+new ThreadFactoryBuilder().setNameFormate("Demo-XX-TT").build();
+```
+5) RejectedExecutionHandler：***饱和策略***。当队列和线程池都满了，此时线程池处于饱和状态，饱和策略在此时用来处理提交的新任务。1）AbortPolicy，直接抛出异常；2）CallerRunsPolicy：只用调用者所在线程来运行任务；3）DiscardOldestPolicy：丢弃队列里最近的一个任务，并执行当前任务；4）DiscardPolicy，不处理，直接丢弃；5）通过实现RejectedExecutionHandler接口自定义策略。
+6) keepAliveTime：***线程活动保持时间***。工作线程空闲后，保持存活的时间。若任务多可以适当调大。
+7) unit：***keepAliveTime的单位***。TimeUnit.DAYS、TimeUnit.HOURS、TimeUnit.MINUTES、TimeUnit.MILLISECONDS、TimeUnit.MICROSECONDS、TimeUnit.NANOSECONDS。
+### 提交任务
+### 关闭线程池
+&emsp;&emsp;关闭线程池有两种方法：shutdown和shutdownNow。  
+&emsp;&emsp;原理是遍历线程池中的工作线程，然后逐个调用线程的interrupt方法来中断线程，所以无法响应中断的任务可能永远无法终止。两个方法的区别在于：
+1) shutdown将线程池的状态设置成SHUTDOWN状态，然后中断所有没有正在执行任务的线程。
+2) shutdownNow首先将线程池的状态设置成STOP，然后尝试停止所有正在执行或暂停任务的线程，并返回等待执行任务的列表。
+
+&emsp;&emsp;即shutdown的方式能保证任务执行完成，而shutdownNow的方式下任务不一定执行完，通常采用shutdown的方式关闭线程池。  
+&emsp;&emsp;只要调用了上面任意方法，isShutdown方法就会返回true，所有线程关闭成功后调用isTerminated方法才会返回true。
+## 合理配置线程池
+### 考虑点
+&emsp;&emsp;合理配置线程池需要从以下几点出发进行分析。
+1) 任务的性质：CPU密集、IO密集、混合型。
+2) 任务的优先级：高、中、低。
+3) 任务的执行时间：长、中、短。
+4) 任务的依赖性：是否依赖其他资源（如数据库连接）。
+### 配置
+&emsp;&emsp;CPU密集型：配置尽可能小的线程，比如 N+1（CPU核心数+1）。  
+&emsp;&emsp;IO密集型：并不是一直执行任务，即等待时间较多，则可以配置尽可能多的线程，如2N。  
+&emsp;&emsp;混合型：可以依据执行时间分解为CPU密集型和IO密集型。  
+&emsp;&emsp;优先级：可以使用PriorityBlockingQueue处理，让优先级高的任务先执行。（此种情况可能让低优先级任务饿死）  
+&emsp;&emsp;执行时间：交给不同规模的线程池，或者使用优先级队列让执行时间短的任务先执行。  
+&emsp;&emsp;依赖性：假如依赖数据库连接池，因为提交SQL请求后等待时间较长，即CPU空闲时间多，则可以设置较多线程以提高CPU利用率。  
+&emsp;&emsp;注意，要使用有界队列。
+## 线程池监控
+&emsp;&emsp;可以通过线程池提供的参数进行监控。
+1) taskCount：线程池需要执行的任务数量。
+2) completedTaskCount：线程池在运行过程中已完成的任务数量，小于等于taskCount。
+3) largestPoolSize：线程池里曾创建过的最大线程数。可以判断线程池曾经是否满过，若lagestPoolSize=maximumPoolSize，则表示线程池曾经满过。
+4) getPoolSize：线程池的线程数量。
+5) getActiveCount：获取活动的线程数。
