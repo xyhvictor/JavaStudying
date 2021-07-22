@@ -3,7 +3,7 @@
 &emsp;&emsp;在开发中，合理的使用线程池能够带来3个好处。  
 1) ***降低资源消耗***。通过重复利用已创建的线程降低线程创建和销毁造成的消耗。
 2) ***提高响应速度***。当任务到达时，任务可以不需要等到线程创建就能立即执行。
-3) ***提高线程的可管理性***。线程时稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一分配、调优和监控。
+3) ***提高线程的可管理性***。线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一分配、调优和监控。
 ## 处理流程
 &emsp;&emsp;线程池的处理主要分为三步，如图所示。
 <div align="center">  
@@ -13,6 +13,7 @@
 1) 线程池判断***核心线程池***里的线程是否都在执行任务。如果不是，则创建一个新的工作线程来执行任务。如果***核心线程池***里的线程都在执行任务，则进入下个流程。
 2) 线程池判断工作队列是否已满。如果工作队列没有满，则将新提交的任务存储在这个工作队列里。如果工作队列满了，则进入下个流程。
 3) 线程池判断线程池中的线程是否都处于工作状态。如果没有，则创建一个新的工作线程来执行任务。如果已经满了，则交给饱和策略来处理这个任务。  
+（通俗理解，首先快速把核心线程池塞满，然后把任务队列塞满，最后把所有线程塞满。）
 
 &emsp;&emsp;ThreadPoolExecutor执行execute()方法的过程如图所示。  
 <div align="center">  
@@ -26,7 +27,7 @@
 
 &emsp;&emsp;为什么如此设计呢？上述步骤中，1和3会使用全局锁，是一个严重的可伸缩瓶颈。在ThreadPoolExecutor预热后（即当前运行的线程数量大于等于corePoolSize），***几乎所有的execute()方法调用都是执行步骤2***，同时步骤2不需要获取全局锁。  
 ***源码分析(jdk11)***  
-execute()执行过程
+&emsp;&emsp;execute()执行过程
 ```
 public void execute(Runnable command) {
     if (command == null)
@@ -100,7 +101,7 @@ public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveT
 1) corePoolSize：***线程池的基本大小***。当提交一个任务到线程池时，线程池会创建一个线程来执行任务（即使有空闲线程也会创建）直到需要执行的任务数大于线程池基本大小。调用prestartAllCoreThreads()方法，线程池会提前创建并启动corePoolSize个线程。
 2) maximumPoolSize：***线程池最大数量***。线程池允许创建的最大线程数，如果任务队列满了，并且已创建的线程数小于最大线程数，则会创建线程执行任务直到线程数达到最大数。***（注意：若采用无界队列，则该参数没什么效果，应当避免使用无界队列，可能会导致oom。）***
 3) workQueue：***任务队列***。用于保存等待执行的任务的阻塞队列。可以使用LinkedBlockingQueue、ArrayBlockingQueue、SynchronousQueue、PriorityBlockingQueue。
-4) ThreadFactory：设置创建线程的工厂，可以通过工厂给线程设置有意义的名字***（debug时很有用）***。下面展示了采用guava提供的ThreadFactoryBuilder给线程池中的线程设置有意义的名字。
+4) ThreadFactory：设置创建线程的工厂，可以通过工厂给线程设置有意义的名字（debug时很有用）。下面展示了采用guava提供的ThreadFactoryBuilder给线程池中的线程设置有意义的名字。
 ```
 new ThreadFactoryBuilder().setNameFormate("Demo-XX-TT").build();
 ```
@@ -114,8 +115,8 @@ new ThreadFactoryBuilder().setNameFormate("Demo-XX-TT").build();
 1) shutdown将线程池的状态设置成SHUTDOWN状态，然后中断所有没有正在执行任务的线程。
 2) shutdownNow首先将线程池的状态设置成STOP，然后尝试停止所有正在执行或暂停任务的线程，并返回等待执行任务的列表。
 
-&emsp;&emsp;即shutdown的方式能保证任务执行完成，而shutdownNow的方式下任务不一定执行完，通常采用shutdown的方式关闭线程池。  
-&emsp;&emsp;只要调用了上面任意方法，isShutdown方法就会返回true，所有线程关闭成功后调用isTerminated方法才会返回true。
+&emsp;&emsp;即shutdown能保证任务执行完成，而shutdownNow不一定执行完任务，通常采用shutdown的方式关闭线程池。  
+&emsp;&emsp;只要调用了上面任意方法，isShutdown方法就会返回true，所有线程关闭成功后，调用isTerminated方法才会返回true。
 ## 合理配置线程池
 ### 考虑点
 &emsp;&emsp;合理配置线程池需要从以下几点出发进行分析。
