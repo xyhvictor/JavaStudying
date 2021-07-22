@@ -1,5 +1,5 @@
 # Executor
-&emsp;&emsp;线程池在java.util.concurrent包中，除此之外，线程池是为了复用线程，将线程的创建维护和任务进行分离，避免了创建和启动线程的消耗。  
+&emsp;&emsp;线程池是为了复用线程，将线程的创建维护和任务执行进行分离，避免了创建和启动线程的消耗。  
 &emsp;&emsp;Executor包括3大部分：  
 1) 任务。即工作单元，包括被执行任务需要实现的接口（***即Runnable或Callable接口***）。
 2) 任务的执行。即将任务分配给多个线程的执行机制，包括***Executor接口***以及继承自Executor接口的***ExecutorService接口***。
