@@ -1,6 +1,6 @@
 # Future
 ## 应用场景  
-&emsp;&emsp;解决问题：上面提到的三种方法都不能保证获取到线程执行的结果，而Future可以。通过实现Callback接口，并用Future可以接收到多线程的执行结果。  
+&emsp;&emsp;解决问题：Runnable、Callable、Thread都不能保证获取到线程执行的结果，而Future可以。通过实现Callback接口，并用Future可以接收到多线程的执行结果。  
 &emsp;&emsp;场景：Future表示一个可能还没有完成的异步任务的结果，针对这个结果可以添加Callback以便在任务执行成功或失败后作出相应的操作。
 ## 接口方法与类图
 &emsp;&emsp;Future接口中包括了5个方法，分别是cancel()、isCancelled()、isDone()、get()、get(long, TimeUnit)，下面分别对其进行详细介绍。

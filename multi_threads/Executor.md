@@ -1,5 +1,12 @@
 # Executor
-&emsp;&emsp;线程池是为了复用线程，将线程的创建维护和任务执行进行分离，避免了创建和启动线程的消耗。  
+## Introduction
+&emsp;&emsp;在HotSpot VM线程模型中，java线程（java.lang.Thread）被一对一映射到本地操作系统线程，即通过操作系统调度java线程。因此为了将这些重复的工作封装起来，java提供了用户级的调度器Executor，将应用分解为一个个任务，然后由Executor将这些任务映射到固定数量的线程上去完成。这种两级调度模型（Executor级调度任务和操作系统级调度线程）如图所示。
+
+<div align="center">  
+<img src="https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/Executor_Framework.png"  width="500" height="400"> 
+</div> 
+
+## Executor框架简介 
 &emsp;&emsp;Executor包括3大部分：  
 1) 任务。即工作单元，包括被执行任务需要实现的接口（***即Runnable或Callable接口***）。
 2) 任务的执行。即将任务分配给多个线程的执行机制，包括***Executor接口***以及继承自Executor接口的***ExecutorService接口***。
@@ -7,12 +14,16 @@
 
 &emsp;&emsp;Executor框架的成员及其关系如图所示  
   
-![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/Executor.png)  
-  
+<div align="center">  
+<img src="https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/Executor.png"  width="500" height="400"> 
+</div> 
+
 &emsp;&emsp;Executor框架的使用示意图如图所示  
-  
-![image](https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/Executor_usage.png)  
-  
+ 
+<div align="center">  
+<img src="https://github.com/xyhvictor/JavaStudying/blob/main/pic/multi_threads/Executor_usage.png"  width="500" height="400"> 
+</div> 
+
 使用步骤大致分为三步，如下所示
 1) 实现Runnable并重写run()方法 或 实现Callable并重写call()方法：
 ```
