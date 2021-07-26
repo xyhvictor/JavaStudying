@@ -44,11 +44,11 @@
 ### 数据倾斜
 &emsp;&emsp;数据倾斜即 ***被缓存的对象大部分缓存在某一台服务器上***，通常由 ***服务器太少*** 造成，如图所示，此时大部分数据集中在服务器A上，而此时B仅有较少的数据。
 <div align="center">  
-<img src="/Users/victor/Desktop/study/java/pic/distributed_system/consistent_hashing/consisten_hashing_6.png"  width="450" height="450">
+<img src="https://github.com/xyhvictor/JavaStudying/blob/main/pic/distributed_system/consistent_hashing/consisten_hashing_6.png"  width="450" height="450">
 </div>
 
 #### 虚拟结点机制
 &emsp;&emsp;一致性哈希算法引入了虚拟节点机制，即对每一个服务器节点计算多个哈希，每个计算结果位置都放置一个此服务节点，称为虚拟节点。通常可以将服务器IP或主机名后加入编号来作为$hash$函数的输入，如图所示。在将资源映射到虚拟结点后，再将虚拟结点映射为实际结点，就可以保证数据分布的均匀。
 <div align="center">  
-<img src="/Users/victor/Desktop/study/java/pic/distributed_system/consistent_hashing/consisten_hashing_7.png"  width="600" height="450">
+<img src="https://github.com/xyhvictor/JavaStudying/blob/main/pic/distributed_system/consistent_hashing/consisten_hashing_7.png"  width="600" height="450">
 </div>
