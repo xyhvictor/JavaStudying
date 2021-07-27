@@ -1,6 +1,9 @@
 ﻿# kdiff3 ignore
 *.orig
 
+# draw.io
+*.drawio
+
 # maven ignore
 target/
 pom.xml
